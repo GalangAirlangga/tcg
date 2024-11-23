@@ -29,8 +29,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const data = await response.json();
       
     res.status(200).json(data);  // Kirimkan data ke frontend
-} catch (error: any) {
-    console.error('Error fetching data:', error.message);  // Log error message
+} catch (error) {
+    console.error('Error fetching data:', error);  // Log error message
     res.status(500).json({ error: 'Server error' });
   }
 }
