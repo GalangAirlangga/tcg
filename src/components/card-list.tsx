@@ -40,7 +40,7 @@ type CardListProps = {
 
 export default function CardList({ filters, page, pageSize, onTotalCountChange }: CardListProps) {
   const [cards, setCards] = useState<PokemonCard[]>([])
-  const [totalCount, setTotalCount] = useState(0)
+  const [, setTotalCount] = useState(0)
 
   useEffect(() => {
       const fetchCards = async () => {
@@ -49,14 +49,19 @@ export default function CardList({ filters, page, pageSize, onTotalCountChange }
           pageSize: pageSize.toString(),
           q: buildQueryString(filters),
         })
-        const apiKey = process.env.API_KEY
-        const headersApi = {
-          'Content-Type': 'application/json',
-          'X-Api-Key': apiKey,
-        };
-        const response = (await fetch(`https://api.pokemontcg.io/v2/cards?${queryParams}`,{
-          headersApi
-        }))
+        if (!process.env.API_KEY) {
+          throw new Error("API_KEY is not defined in environment variables.");
+      }
+        const apiKey = process.env.API_KEY;
+        const requestHeaders: HeadersInit = new Headers();
+        requestHeaders.set('Content-Type', 'application/json');
+        requestHeaders.set('X-Api-Key', apiKey);
+        const response = (await fetch(
+          `https://api.pokemontcg.io/v2/cards?${queryParams}`,
+          {
+            method: 'POST',
+            headers: requestHeaders,
+          }))
         const data = await response.json()
 
         setCards(data.data)

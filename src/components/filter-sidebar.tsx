@@ -1,14 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Slider } from '@/components/ui/slider'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
 export type Filters = {
-  priceRange: [number, number]
   supertypes: string[]
   cardTypes: string[]
   subtypes: string[]
@@ -20,11 +18,7 @@ type FilterSidebarProps = {
 }
 
 export default function FilterSidebar({ onFilterChange }: FilterSidebarProps) {
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 100])
-  const [supertypes, setSupertypes] = useState<string[]>([])
-  const [cardTypes, setCardTypes] = useState<string[]>([])
-  const [subtypes, setSubtypes] = useState<string[]>([])
-  const [rarities, setRarities] = useState<string[]>([])
+
   const [types, setTypes] = useState<string[]>([])
   const [allSubtypes, setAllSubtypes] = useState<string[]>([])
   const [allSupertypes, setAllSupertypes] = useState<string[]>([])
@@ -54,9 +48,7 @@ export default function FilterSidebar({ onFilterChange }: FilterSidebarProps) {
     fetchData()
   }, [])
 
-  const handlePriceChange = (value: number[]) => {
-    setPriceRange(value as [number, number])
-  }
+
 
   const handleTypeChange = (type: string) => {
     setSelectedTypes(prev => 
@@ -84,7 +76,6 @@ export default function FilterSidebar({ onFilterChange }: FilterSidebarProps) {
 
   const applyFilters = () => {
     onFilterChange({ 
-      priceRange, 
       supertypes: selectedSupertypes,
       cardTypes: selectedTypes, 
       subtypes: selectedSubtypes, 

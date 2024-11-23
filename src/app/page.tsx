@@ -8,7 +8,6 @@ import Pagination from '@/components/pagination'
 
 export default function Home() {
   const [filters, setFilters] = useState<Filters>({
-    priceRange: [0, 1000],
     supertypes: [],
     cardTypes: [],
     subtypes: [],
