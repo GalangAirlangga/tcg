@@ -49,10 +49,8 @@ export default function CardList({ filters, page, pageSize, onTotalCountChange }
           pageSize: pageSize.toString(),
           q: buildQueryString(filters),
         })
-        if (!process.env.API_KEY) {
-          throw new Error("API_KEY is not defined in environment variables.");
-      }
-        const apiKey = process.env.API_KEY;
+
+        const apiKey = process.env.API_KEY ?? "";
         const requestHeaders: HeadersInit = new Headers();
         requestHeaders.set('Content-Type', 'application/json');
         requestHeaders.set('X-Api-Key', apiKey);
