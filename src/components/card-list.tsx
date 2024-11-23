@@ -53,7 +53,7 @@ export default function CardList({ filters, page, pageSize, onTotalCountChange }
         const apiKey = process.env.API_KEY ?? "";
         const requestHeaders: HeadersInit = new Headers();
         requestHeaders.set('Content-Type', 'application/json');
-        requestHeaders.set('Access-Control-Allow-Origin', '*');  
+        requestHeaders.set('Access-Control-Allow-Origin', 'https://api.pokemontcg.io');  
         requestHeaders.set('Access-Control-Allow-Credentials', 'true');   
         requestHeaders.set('X-Api-Key', apiKey);
         const response = (await fetch(
