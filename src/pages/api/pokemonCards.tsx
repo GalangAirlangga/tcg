@@ -2,15 +2,15 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { page, pageSize, filters } = req.query;
+  const { page, pageSize, q } = req.query;
 
   // Membuat query parameters berdasarkan filter yang diberikan
   const queryParams = new URLSearchParams({
     page: page?.toString() || '1',
     pageSize: pageSize?.toString() || '12',
-    q: buildQueryString(filters),  // Gunakan fungsi buildQueryString untuk menyusun query string
+    q: q?.toString() || '',  // Gunakan fungsi buildQueryString untuk menyusun query string
   });
-
+  
   const apiUrl = `https://api.pokemontcg.io/v2/cards?${queryParams}`;
 
   try {
@@ -33,35 +33,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.error('Error fetching data:', error);  // Log error message
     res.status(500).json({ error: 'Server error' });
   }
-}
-
-// Fungsi untuk membangun query string berdasarkan filter
-function buildQueryString(filters: any) {
-  const queryParts: string[] = [];
-
-  // Filter berdasarkan supertypes
-  if (filters?.supertypes?.length > 0) {
-    const supertypesQuery = filters.supertypes.map((supertype: string) => `supertype:"${supertype}"`).join(' OR ');
-    queryParts.push(`(${supertypesQuery})`);
-  }
-
-  // Filter berdasarkan card types
-  if (filters?.cardTypes?.length > 0) {
-    const cardTypesQuery = filters.cardTypes.map((type: string) => `types:"${type}"`).join(' OR ');
-    queryParts.push(`(${cardTypesQuery})`);
-  }
-
-  // Filter berdasarkan subtypes
-  if (filters?.subtypes?.length > 0) {
-    const subtypesQuery = filters.subtypes.map((subtype: string) => `subtypes:"${subtype}"`).join(' OR ');
-    queryParts.push(`(${subtypesQuery})`);
-  }
-
-  // Filter berdasarkan rarities
-  if (filters?.rarities?.length > 0) {
-    const raritiesQuery = filters.rarities.map((rarity: string) => `rarity:"${rarity}"`).join(' OR ');
-    queryParts.push(`(${raritiesQuery})`);
-  }
-
-  return queryParts.join(' ');
 }
