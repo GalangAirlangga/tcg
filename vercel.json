@@ -1,8 +1,8 @@
 {
     "rewrites": [
       {
-        "source": "https://api.pokemontcg.io/:path*",
-        "destination": "*"
+        "source": "/api/:path*",
+        "destination": "https://api.pokemontcg.io/:path*"
       }
     ]
   }
