@@ -1,6 +1,3 @@
-import { Search } from 'lucide-react'
-import { Input } from '@/components/ui/input'
-
 export default function Header() {
   return (
     <header className="bg-primary text-primary-foreground shadow-md">
