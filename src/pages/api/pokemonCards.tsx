@@ -8,6 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const queryParams = new URLSearchParams({
     page: page?.toString() || '1',
     pageSize: pageSize?.toString() || '12',
+    orderBy:"-set.releaseDate",
     q: q?.toString() || '',  // Gunakan fungsi buildQueryString untuk menyusun query string
   });
 

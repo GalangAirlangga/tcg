@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Skeleton } from "@/components/ui/skeleton"
-import Image from 'next/image'
 import { Filters } from './filter-sidebar'
 
 type PokemonCard = {
@@ -15,6 +14,7 @@ type PokemonCard = {
     name: string
     supertype: string
     subtypes: string[]
+    rules: string[]
     hp: string
     types: string[]
     evolvesFrom?: string
@@ -114,6 +114,7 @@ export default function CardList({ filters, page, pageSize, onTotalCountChange }
             setIsLoading(true)
             const queryParams = new URLSearchParams({
                 page: page.toString(),
+                orderBy: "-set.releaseDate",
                 pageSize: pageSize.toString(),
                 q: buildQueryString(filters),
             })
@@ -237,9 +238,9 @@ export default function CardList({ filters, page, pageSize, onTotalCountChange }
                                                         {type}
                                                     </Badge>
                                                 ))}
-                                                <span className="text-sm font-bold text-white bg-gray-800 bg-opacity-50 px-2 py-1 rounded-full">
+                                                {card.supertype === "Pokémon" && (<span className="text-sm font-bold text-white bg-gray-800 bg-opacity-50 px-2 py-1 rounded-full">
                                                     HP {card.hp}
-                                                </span>
+                                                </span>)}
                                             </div>
                                             <Avatar className="w-full h-96 object-center rounded-none">
                                                 <AvatarImage
@@ -261,13 +262,15 @@ export default function CardList({ filters, page, pageSize, onTotalCountChange }
                                             <h2 className="text-2xl font-bold mb-2">{card.name}</h2>
                                             <p className="text-sm text-muted-foreground mb-4">{card.supertype} - {card.subtypes.join(', ')}</p>
                                             <div className="space-y-2">
-                                                <div className="flex items-center justify-between">
-                                                    <span className="text-sm font-medium">HP</span>
-                                                    <span>{card.hp}</span>
-                                                </div>
+                                                {card.supertype === "Pokémon" && (
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="text-sm font-medium">HP</span>
+                                                        <span>{card.hp}</span>
+                                                    </div>
+                                                )}
                                             </div>
                                         </CardContent>
-                                        <CardFooter className="bg-muted p-4">
+                                        <CardFooter className={`${getTypeColor(card.types?.[0])} text-white p-4`}>
                                             <div className="flex justify-between items-center w-full">
                                                 <span className="text-sm font-medium">{card.rarity}</span>
                                                 <span className="font-semibold">${getCardPrice(card).toFixed(2)}</span>
@@ -287,7 +290,7 @@ export default function CardList({ filters, page, pageSize, onTotalCountChange }
                                                 alt={card.name}
                                                 className="object-constain"
                                                 width={300}
-                                                height={400}
+                                                height={410}
                                                 onError={(e) => {
                                                     e.currentTarget.src = '/placeholder.svg?height=356&width=256'
                                                 }}
@@ -327,6 +330,15 @@ export default function CardList({ filters, page, pageSize, onTotalCountChange }
                                                             <p><strong>{attack.name}</strong> - Cost: {attack.cost.join(', ')}</p>
                                                             <p>Damage: {attack.damage}, Energy: {attack.convertedEnergyCost}</p>
                                                             <p>{attack.text}</p>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}{card.rules && (
+                                                <div>
+                                                    <h3 className="text-lg font-semibold">Rules</h3>
+                                                    {card.rules.map((rule, index) => (
+                                                        <div key={index}>
+                                                            <p>{rule}</p>
                                                         </div>
                                                     ))}
                                                 </div>
