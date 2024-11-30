@@ -55,7 +55,7 @@ export default function CardList({ filters, page, pageSize, onTotalCountChange }
         requestHeaders.set('Content-Type', 'application/json');
         requestHeaders.set('X-Api-Key', apiKey);
         const response = (await fetch(
-          `https://api.pokemontcg.io/v2/cards?${queryParams}`,
+          `/api/pokemonCards?${queryParams}`,
           {
             method: 'POST',
             headers: requestHeaders,
@@ -65,7 +65,7 @@ export default function CardList({ filters, page, pageSize, onTotalCountChange }
         setCards(data.data)
         setTotalCount(data.totalCount)
         onTotalCountChange(data.totalCount)
-      
+
       }
 
       fetchCards()
@@ -122,12 +122,12 @@ export default function CardList({ filters, page, pageSize, onTotalCountChange }
           <Dialog key={card.id}>
             <DialogTrigger asChild>
               <Card className="cursor-pointer hover:shadow-lg transition-shadow">
-               
+
                 <CardContent>
-                  <Image src={card.images.small} 
-                  alt={card.name} 
-                  width={200} 
-                  height={300} 
+                  <Image src={card.images.small}
+                  alt={card.name}
+                  width={200}
+                  height={300}
                   priority={false}
                   className="rounded-lg mt-1" />
                 </CardContent>
@@ -137,18 +137,18 @@ export default function CardList({ filters, page, pageSize, onTotalCountChange }
                   <span className="text-sm text-muted-foreground">{card.rarity?? '-'}</span>
                   <span className="font-semibold">${getCardPrice(card).toFixed(2)}</span>
                   </p>
-                  
+
                 </CardFooter>
               </Card>
-            </DialogTrigger>  
+            </DialogTrigger>
             <DialogContent aria-description={card.name}>
-             
+
               <DialogHeader>
                 <DialogTitle>{card.name}</DialogTitle>
               </DialogHeader>
                <DialogDescription>{card.flavorText}</DialogDescription>
               <div className="grid grid-cols-2 gap-4">
-                <Image src={card.images.large} 
+                <Image src={card.images.large}
                        alt={card.name}
                        priority={false}
                        width={300}
@@ -173,4 +173,3 @@ export default function CardList({ filters, page, pageSize, onTotalCountChange }
     </div>
   )
 }
-

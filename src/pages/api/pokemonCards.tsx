@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     pageSize: pageSize?.toString() || '12',
     q: q?.toString() || '',  // Gunakan fungsi buildQueryString untuk menyusun query string
   });
-  
+
   const apiUrl = `https://api.pokemontcg.io/v2/cards?${queryParams}`;
 
   try {
@@ -27,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const data = await response.json();
-      
+
     res.status(200).json(data);  // Kirimkan data ke frontend
 } catch (error) {
     console.error('Error fetching data:', error);  // Log error message
