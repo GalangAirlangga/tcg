@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Filters } from './filter-sidebar'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 type PokemonCard = {
     id: string
@@ -246,9 +247,7 @@ export default function CardList({ filters, page, pageSize, onTotalCountChange }
                                                 <AvatarImage
                                                     src={card.images.small}
                                                     alt={card.name}
-                                                    className="object-constain"
-                                                    width={256}
-                                                    height={356}
+                                                    className="object-constain w-full h-96"
                                                     onError={(e) => {
                                                         e.currentTarget.src = '/placeholder.svg?height=356&width=256'
                                                     }}
@@ -278,19 +277,19 @@ export default function CardList({ filters, page, pageSize, onTotalCountChange }
                                         </CardFooter>
                                     </Card>
                                 </DialogTrigger>
-                                <DialogContent className="sm:max-w-[700px]">
+                                <DialogContent className="max-w-[300px] sm:max-w-[700px] h-full sm:h-5/6">
                                     <DialogHeader>
                                         <DialogTitle>{card.name}</DialogTitle>
                                         <DialogDescription>{card.flavorText}</DialogDescription>
                                     </DialogHeader>
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <ScrollArea>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <Avatar className="w-full h-96 object-center rounded-none">
                                             <AvatarImage
                                                 src={card.images.small}
                                                 alt={card.name}
-                                                className="object-constain"
-                                                width={300}
-                                                height={410}
+                                                className="object-constain w-full h-96 "
+
                                                 onError={(e) => {
                                                     e.currentTarget.src = '/placeholder.svg?height=356&width=256'
                                                 }}
@@ -372,6 +371,7 @@ export default function CardList({ filters, page, pageSize, onTotalCountChange }
                                             )}
                                         </div>
                                     </div>
+                                    </ScrollArea>
                                 </DialogContent>
                             </Dialog>
                         ))
