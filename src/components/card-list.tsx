@@ -1,18 +1,34 @@
 'use client'
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Separator } from "@/components/ui/separator"
-import { Skeleton } from "@/components/ui/skeleton"
-import { useMediaQuery } from "@/hooks/use-media-query"
-import { useEffect, useState } from 'react'
-import { Filters } from './filter-sidebar'
-import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerHeader, DrawerFooter, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
-import { Button } from "@/components/ui/button";
-import { PokemonCard } from "@/types/PokemonCard";
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
+import {Badge} from "@/components/ui/badge"
+import {Card, CardContent, CardFooter, CardHeader} from '@/components/ui/card'
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger
+} from '@/components/ui/dialog'
+import {ScrollArea} from '@/components/ui/scroll-area'
+import {Separator} from "@/components/ui/separator"
+import {Skeleton} from "@/components/ui/skeleton"
+import {useMediaQuery} from "@/hooks/use-media-query"
+import {useEffect, useState} from 'react'
+import {Filters} from './filter-sidebar'
+import {
+    Drawer,
+    DrawerClose,
+    DrawerContent,
+    DrawerDescription,
+    DrawerHeader,
+    DrawerFooter,
+    DrawerTitle,
+    DrawerTrigger
+} from "@/components/ui/drawer";
+import {Button} from "@/components/ui/button";
+import {PokemonCard} from "@/types/PokemonCard";
 
 
 type CardListProps = {
@@ -22,7 +38,11 @@ type CardListProps = {
     onTotalCountChange: (count: number) => void
 }
 
-export default function CardList({ filters, page, pageSize, onTotalCountChange }: CardListProps) {
+interface CardSkeletonProps {
+    key?: number
+}
+
+export default function CardList({filters, page, pageSize, onTotalCountChange}: CardListProps) {
     const [cards, setCards] = useState<PokemonCard[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [, setTotalCount] = useState(0)
@@ -38,14 +58,14 @@ export default function CardList({ filters, page, pageSize, onTotalCountChange }
             })
 
             const apiKey = process.env.NEXT_PUBLIC_POKEMON_TCG_API_KEY ?? "";
-            const requestHeaders: HeadersInit = new Headers();
-            requestHeaders.set('Content-Type', 'application/json');
-            requestHeaders.set('X-Api-Key', apiKey);
             const response = await fetch(
-                `https://api.pokemontcg.io/v2/cards?${queryParams}`,
+                `/api/pokemonCard?${queryParams}`,
                 {
                     method: 'GET',
-                    headers: requestHeaders,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Api-Key': apiKey,
+                    },
                 })
             const data = await response.json()
 
@@ -55,7 +75,7 @@ export default function CardList({ filters, page, pageSize, onTotalCountChange }
             setIsLoading(false)
         }
 
-        fetchCards()
+        fetchCards().then(() => {})
     }, [filters, page, pageSize, onTotalCountChange])
 
     const buildQueryString = (filters: Filters) => {
@@ -114,24 +134,24 @@ export default function CardList({ filters, page, pageSize, onTotalCountChange }
         return colors[type] || "bg-gray-500"
     }
 
-    const CardSkeleton = () => (
+    const CardSkeleton = ({}: CardSkeletonProps) => (
         <Card className="w-full max-w-sm mx-auto overflow-hidden">
             <CardHeader className="p-0 relative">
-                <Skeleton className="w-full h-64" />
+                <Skeleton className="w-full h-64"/>
             </CardHeader>
             <CardContent className="p-4">
-                <Skeleton className="h-8 w-3/4 mb-2" />
-                <Skeleton className="h-4 w-1/2 mb-4" />
+                <Skeleton className="h-8 w-3/4 mb-2"/>
+                <Skeleton className="h-4 w-1/2 mb-4"/>
                 <div className="space-y-2">
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-full"/>
+                    <Skeleton className="h-4 w-full"/>
+                    <Skeleton className="h-4 w-full"/>
                 </div>
             </CardContent>
             <CardFooter className="bg-muted p-4">
                 <div className="flex justify-between items-center w-full">
-                    <Skeleton className="h-4 w-1/4" />
-                    <Skeleton className="h-4 w-1/4" />
+                    <Skeleton className="h-4 w-1/4"/>
+                    <Skeleton className="h-4 w-1/4"/>
                 </div>
             </CardFooter>
         </Card>
@@ -142,14 +162,14 @@ export default function CardList({ filters, page, pageSize, onTotalCountChange }
         <div className="flex-1">
             <div key="grid-main" className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {isLoading
-                    ? Array.from({ length: pageSize }).map((_, index) => (
-                        <CardSkeleton key={index} />
+                    ? Array.from({length: pageSize}).map((_, index) => (
+                        <CardSkeleton key={index}/>
                     ))
                     : cards.length > 0
                         ? cards.map((card) => (
                             <div key={card.id}>
                                 {isDesktop ? (
-                                    <Dialog key={card.id}>
+                                    <Dialog>
                                         <DialogTrigger asChild>
                                             {CardPokemon(card, getTypeColor, getCardPrice)}
                                         </DialogTrigger>
@@ -162,7 +182,7 @@ export default function CardList({ filters, page, pageSize, onTotalCountChange }
                                         </DialogContent>
                                     </Dialog>
                                 ) : (
-                                    <Drawer key={card.id}>
+                                    <Drawer fadeFromIndex={} snapPoints={}>
                                         <DrawerTrigger asChild>
                                             {CardPokemon(card, getTypeColor, getCardPrice)}
                                         </DrawerTrigger>
@@ -193,6 +213,7 @@ export default function CardList({ filters, page, pageSize, onTotalCountChange }
         </div>
     )
 }
+
 function cardPokemonDetail(card: PokemonCard) {
     return <ScrollArea>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -203,16 +224,16 @@ function cardPokemonDetail(card: PokemonCard) {
                     className="object-constain  h-fit "
                     onError={(e) => {
                         e.currentTarget.src = '/placeholder.svg?height=356&width=256'
-                    }} />
+                    }}/>
                 <AvatarFallback>
-                    <Skeleton className="w-full h-full" />
+                    <Skeleton className="w-full h-full"/>
                 </AvatarFallback>
             </Avatar>
             <div className="space-y-4">
                 <div>
-                <Separator />
+                    <Separator/>
                     <h3 className="text-lg font-semibold">Details</h3>
-                    <Separator />
+                    <Separator/>
                     <p><strong>Supertype:</strong> {card.supertype}</p>
                     <p><strong>Subtypes:</strong> {card.subtypes?.join(', ')}</p>
                     <p><strong>HP:</strong> {card.hp}</p>
@@ -245,22 +266,22 @@ function cardPokemonDetail(card: PokemonCard) {
                         ))}
                     </div>
                 )}{card.rules && (
-                    <div>
-                        <h3 className="text-lg font-semibold">Rules</h3>
-                        {card.rules.map((rule, index) => (
-                            <div key={index}>
-                                <p>{rule}</p>
-                            </div>
-                        ))}
-                    </div>
-                )}
+                <div>
+                    <h3 className="text-lg font-semibold">Rules</h3>
+                    {card.rules.map((rule, index) => (
+                        <div key={index}>
+                            <p>{rule}</p>
+                        </div>
+                    ))}
+                </div>
+            )}
             </div>
         </div>
 
         <div>
-        <Separator />
+            <Separator/>
             <h3 className="text-lg font-semibold">Market Prices</h3>
-            <Separator />
+            <Separator/>
             <div className="grid grid-cols-2 gap-2">
                 {card.tcgplayer?.prices.holofoil && (
                     <div>
@@ -288,16 +309,18 @@ function cardPokemonDetail(card: PokemonCard) {
     </ScrollArea>
 }
 
-function CardPokemon(card: PokemonCard, getTypeColor: (type: string) => string, getCardPrice: (card: PokemonCard) => number) {
-    return <Card className="w-full max-w-sm mx-auto overflow-hidden transition-all duration-300 transform hover:scale-105 cursor-pointer">
+function CardPokemon(card: PokemonCard, getTypeColor: (type: string | undefined) => string, getCardPrice: (card: PokemonCard) => number) {
+    return <Card
+        className="w-full max-w-sm mx-auto overflow-hidden transition-all duration-300 transform hover:scale-105 cursor-pointer">
         <CardHeader className="p-0 relative">
             <div className="absolute top-2 left-2 z-10 flex items-center space-x-2">
                 {card.types && card.types.map((type, index) => (
-                    <Badge key={index} variant="outline" className={`${getTypeColor(type)} text-white`}>
+                    <Badge key={`${type}-${index}`} variant="outline" className={`${getTypeColor(type)} text-white`}>
                         {type}
                     </Badge>
                 ))}
-                {card.supertype === "Pokémon" && (<span className="text-sm font-bold text-white bg-gray-800 bg-opacity-50 px-2 py-1 rounded-full">
+                {card.supertype === "Pokémon" && (
+                    <span className="text-sm font-bold text-white bg-gray-800 bg-opacity-50 px-2 py-1 rounded-full">
                     HP {card.hp}
                 </span>)}
             </div>
@@ -308,9 +331,9 @@ function CardPokemon(card: PokemonCard, getTypeColor: (type: string) => string, 
                     className="object-constain w-full h-96"
                     onError={(e) => {
                         e.currentTarget.src = '/placeholder.svg?height=356&width=256'
-                    }} />
+                    }}/>
                 <AvatarFallback>
-                    <Skeleton className="w-full h-full" />
+                    <Skeleton className="w-full h-full"/>
                 </AvatarFallback>
             </Avatar>
         </CardHeader>
